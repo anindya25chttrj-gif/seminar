@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import json
 import os
 from pymongo import MongoClient
+import certifi
 
 app = Flask(__name__)
 app.secret_key = "super_secret_key_for_sessions"
@@ -16,7 +17,6 @@ USE_MONGO = MONGO_URI is not None
 # ==========================================
 # 2. LIGHTWEIGHT ML SIMULATION
 # ==========================================
-# Replaces scikit-learn to bypass Vercel's 250MB size limit
 def predict_cgpa(attendance, study_hours, prev_cgpa):
     base_score = 0.5
     att_weight = attendance * 0.015
@@ -55,7 +55,8 @@ DB_FILE = 'database.json'
 
 def load_db():
     if USE_MONGO:
-        client = MongoClient(MONGO_URI)
+        # Added tlsCAFile=certifi.where() to fix Vercel SSL error
+        client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
         db = client['student_portal']
         doc = db['data'].find_one({"_id": "main_db"})
         return doc['data'] if doc else DEFAULT_DB
@@ -67,7 +68,8 @@ def load_db():
 
 def save_db(db_data):
     if USE_MONGO:
-        client = MongoClient(MONGO_URI)
+        # Added tlsCAFile=certifi.where() to fix Vercel SSL error
+        client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
         db = client['student_portal']
         db['data'].update_one({"_id": "main_db"}, {"$set": {"data": db_data}}, upsert=True)
     elif IS_VERCEL:
@@ -210,7 +212,6 @@ def dashboard():
         display_study_hours = float(request.form['study_hours'])
         display_prev_cgpa = float(request.form['prev_cgpa'])
         
-        # Call the new lightweight prediction function
         raw_prediction = predict_cgpa(att, display_study_hours, display_prev_cgpa)
         prediction = round(min(10.0, max(0.0, raw_prediction)), 2)
         
