@@ -77,7 +77,6 @@ def save_db(db_data):
     else:
         with open(DB_FILE, 'w') as f:
             json.dump(db_data, f, indent=4)
-
 DB = load_db()
 
 # ==========================================
