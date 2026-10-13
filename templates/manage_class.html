@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Class</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f8f9fa; }
+        .radio-group { display: flex; gap: 15px; }
+        .radio-group label { cursor: pointer; }
+        .btn-save { background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin-top: 20px; float: right; font-weight: bold;}
+        .btn-save:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/teacher_dashboard" style="text-decoration: none; color: #667eea;">&larr; Back to Dashboard</a>
+        <h2>{{ class_info.subject }} (Section {{ class_info.section }})</h2>
+        <p>{{ class_info.day }} at {{ class_info.time }}</p>
+
+        <form method="POST">
+            <table>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Classes Attended</th>
+                    <th>Current %</th>
+                    <th>Mark Today's Attendance</th>
+                </tr>
+                {% for sid, data in students.items() %}
+                <tr>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.metrics.attended_classes }} / {{ data.metrics.total_classes }}</td>
+                    
+                    <!-- Calculate percentage on the fly -->
+                    <td>
+                        {% if data.metrics.total_classes > 0 %}
+                            {{ "%.1f"|format((data.metrics.attended_classes / data.metrics.total_classes) * 100) }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="status_{{ sid }}" value="present" required> Present
+                            </label>
+                            <label>
+                                <input type="radio" name="status_{{ sid }}" value="absent" required> Absent
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <button type="submit" class="btn-save">Submit Today's Attendance</button>
+        </form>
+    </div>
+</body>
+</html>
