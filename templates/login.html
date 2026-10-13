@@ -2,9 +2,21 @@
 <html>
 <head>
     <title>Login - Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); width: 320px; }
+        .card {
+    /* Replace fixed width with these three lines: */
+    width: 90%; 
+    max-width: 400px; 
+    box-sizing: border-box; 
+    
+    /* Keep your existing styles (background, padding, border-radius) below */
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
         h2 { text-align: center; color: #333; margin-top: 0; }
         input, select, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         button { background: #4CAF50; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 15px; }
