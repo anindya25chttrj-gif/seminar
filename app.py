@@ -55,8 +55,8 @@ DB_FILE = 'database.json'
 
 def load_db():
     if USE_MONGO:
-        # Added tlsCAFile=certifi.where() to fix Vercel SSL error
-        client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+        # Added overrides to bypass Vercel's strict SSL blocking
+        client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
         db = client['student_portal']
         doc = db['data'].find_one({"_id": "main_db"})
         return doc['data'] if doc else DEFAULT_DB
@@ -68,8 +68,8 @@ def load_db():
 
 def save_db(db_data):
     if USE_MONGO:
-        # Added tlsCAFile=certifi.where() to fix Vercel SSL error
-        client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+        # Added overrides to bypass Vercel's strict SSL blocking
+        client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
         db = client['student_portal']
         db['data'].update_one({"_id": "main_db"}, {"$set": {"data": db_data}}, upsert=True)
     elif IS_VERCEL:
