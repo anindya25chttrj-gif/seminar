@@ -2,9 +2,21 @@
 <html>
 <head>
     <title>Student Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 350px; }
+        .card {
+    /* Replace fixed width with these three lines: */
+    width: 90%; 
+    max-width: 400px; 
+    box-sizing: border-box; 
+    
+    /* Keep your existing styles (background, padding, border-radius) below */
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
         input { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
         button { width: 100%; padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
         button:hover { background: #45a049; }
