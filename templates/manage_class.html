@@ -20,7 +20,7 @@
         <a href="/teacher_dashboard" style="text-decoration: none; color: #667eea;">&larr; Back to Dashboard</a>
         <h2>{{ class_info.subject }} (Section {{ class_info.section }})</h2>
         <p>{{ class_info.day }} at {{ class_info.time }}</p>
-
+        <div style="overflow-x: auto; width: 100%;">
         <form method="POST">
             <table>
                 <tr>
@@ -58,6 +58,7 @@
             </table>
             <button type="submit" class="btn-save">Submit Today's Attendance</button>
         </form>
+    </div>
     </div>
 </body>
 </html>
