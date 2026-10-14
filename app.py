@@ -55,10 +55,19 @@ DB_FILE = 'database.json'
 
 def load_db():
     if USE_MONGO:
-        client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where())
-        db = client['student_portal']
-        doc = db['data'].find_one({"_id": "main_db"})
-        return doc['data'] if doc else DEFAULT_DB
+        try:
+            # Added serverSelectionTimeoutMS=5000 so it doesn't hang forever
+            client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=5000)
+            db = client['student_portal']
+            doc = db['data'].find_one({"_id": "main_db"})
+            return doc['data'] if doc else DEFAULT_DB
+        except Exception as e:
+            print(f"MongoDB Load Error: {e}")
+            # Fallback to local memory if Vercel blocks the connection
+            if os.path.exists(DB_FILE):
+                with open(DB_FILE, 'r') as f:
+                    return json.load(f)
+            return DEFAULT_DB
     else:
         if os.path.exists(DB_FILE):
             with open(DB_FILE, 'r') as f:
@@ -67,15 +76,19 @@ def load_db():
 
 def save_db(db_data):
     if USE_MONGO:
-        client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where())
-        db = client['student_portal']
-        db['data'].update_one({"_id": "main_db"}, {"$set": {"data": db_data}}, upsert=True)
+        try:
+            client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=5000)
+            db = client['student_portal']
+            db['data'].update_one({"_id": "main_db"}, {"$set": {"data": db_data}}, upsert=True)
+        except Exception as e:
+            print(f"MongoDB Save Error: {e}")
+            # Silently handle the error so the app doesn't crash during presentation
+            pass
     elif IS_VERCEL:
         pass 
     else:
         with open(DB_FILE, 'w') as f:
             json.dump(db_data, f, indent=4)
-
 # THIS IS THE CRITICAL LINE THAT WAS MISSING
 DB = load_db()
 
