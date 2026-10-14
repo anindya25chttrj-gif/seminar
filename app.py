@@ -55,7 +55,6 @@ DB_FILE = 'database.json'
 
 def load_db():
     if USE_MONGO:
-        # Provide the exact certificates Atlas demands
         client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where())
         db = client['student_portal']
         doc = db['data'].find_one({"_id": "main_db"})
@@ -68,7 +67,6 @@ def load_db():
 
 def save_db(db_data):
     if USE_MONGO:
-        # Provide the exact certificates Atlas demands
         client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where())
         db = client['student_portal']
         db['data'].update_one({"_id": "main_db"}, {"$set": {"data": db_data}}, upsert=True)
@@ -77,7 +75,9 @@ def save_db(db_data):
     else:
         with open(DB_FILE, 'w') as f:
             json.dump(db_data, f, indent=4)
-            DB = load_db()
+
+# THIS IS THE CRITICAL LINE THAT WAS MISSING
+DB = load_db()
 
 # ==========================================
 # 4. WEB ROUTES
